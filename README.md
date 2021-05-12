@@ -4,18 +4,21 @@
 
 ## 项目介绍
 本项目为类球球大作战多人实时对战游戏happyball的匹配服务器，负责客户端与happyball游戏服务器之间的房间匹配服务。
+
+
+
 ## 涉及技术
-- []: https://github.com/skywind3000/kcp	"kcp"
+- [kcp](https://github.com/skywind3000/kcp )
 
-  
-
-- []: https://github.com/grpc/grpc-go	"grpc"
+- [grpc](https://github.com/grpc/grpc-go)
 
   
 
 ## 运行环境要求
 
 - **[Go](https://golang.org/)**: any one of the **three latest major** [releases](https://golang.org/doc/devel/release.html).
+
+  
 
 ## happyball其他项目链接
 
