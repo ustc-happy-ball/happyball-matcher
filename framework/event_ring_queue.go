@@ -1,22 +1,23 @@
-package event
+package framework
 
 import (
 	"errors"
+	"happyball-matcher/framework/interface"
 	"math"
 	"sync"
 )
 
 type EventRingQueue struct {
-	rear     int32           //头指针，指向队列开头元素
-	head     int32           //尾指针，指向下一次待插入元素的位置
-	size     int32           //队列大小
-	eventMap map[int32]Event //消息集合，key为下标，value为消息
+	rear     int32                      //头指针，指向队列开头元素
+	head     int32                      //尾指针，指向下一次待插入元素的位置
+	size     int32                      //队列大小
+	eventMap map[int32]_interface.Event //消息集合，key为下标，value为消息
 	lock     sync.Mutex
 }
 
 func NewEventRingQueue(maxSize int32) *EventRingQueue {
 	return &EventRingQueue{
-		eventMap: make(map[int32]Event, maxSize+1),
+		eventMap: make(map[int32]_interface.Event, maxSize+1),
 		head:     0,
 		rear:     0,
 		size:     maxSize + 1,
@@ -33,7 +34,7 @@ func (queue *EventRingQueue) IsFull() bool {
 	return res
 }
 
-func (queue *EventRingQueue) Pop() (Event, error) {
+func (queue *EventRingQueue) Pop() (_interface.Event, error) {
 	queue.lock.Lock()
 	if queue.IsEmpty() {
 		queue.lock.Unlock()
@@ -47,7 +48,7 @@ func (queue *EventRingQueue) Pop() (Event, error) {
 	return event, nil
 }
 
-func (queue *EventRingQueue) Push(event Event) error {
+func (queue *EventRingQueue) Push(event _interface.Event) error {
 	queue.lock.Lock()
 	if queue.IsFull() {
 		queue.lock.Unlock()
@@ -64,19 +65,3 @@ func (queue *EventRingQueue) capacity() int32 {
 	res := int32(math.Abs(float64(queue.rear - queue.head)))
 	return res
 }
-
-//func (queue *EventRingQueue) Push(event Event)  {
-//	if nil != event {
-//		queue.eventChan <- queue.index
-//		queue.eventMap[queue.index] = event
-//		queue.index++
-//		if queue.index >= queue.maxSize {
-//			queue.index = 0
-//		}
-//	}
-//}
-//
-//func (queue *EventRingQueue) Pop() Event{
-//	idx := <- queue.eventChan
-//	return queue.eventMap[idx]
-//}

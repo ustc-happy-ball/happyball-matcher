@@ -1,4 +1,4 @@
-package event
+package _interface
 
 type Handler interface {
 	//处理消息

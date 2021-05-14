@@ -1,4 +1,4 @@
-package event
+package _interface
 
 type Session interface {
 	Read() ([]byte, error)

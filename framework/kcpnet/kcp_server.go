@@ -22,4 +22,3 @@ func NewKcpServer(addr string) (s *KcpServer, err error) {
 	}
 	return ts, err
 }
-

@@ -1,30 +1,29 @@
 package framework
 
-import (
-
-	event "github.com/fwv/happyball-matcher/framework/event"
-)
-
-var EVENT_HANDLER = &BaseEventHandler{}
+import "happyball-matcher/framework/interface"
 
 type BaseEventHandler struct {
 }
 
-func (b BaseEventHandler) OnEvent(e event.Event) {
+func NewBaseEventHandler() *BaseEventHandler {
+	return &BaseEventHandler{}
+}
+
+func (b *BaseEventHandler) OnEvent(e _interface.Event) {
 	if nil == e {
 		return
 	}
-	handler := event.Manager.FetchHandler(e.GetCode())
+	handler := Manager.FetchHandler(e.GetCode())
 	if nil != handler {
 		handler.OnEvent(e)
 	}
 }
 
-func (b BaseEventHandler) OnEventToSession(e event.Event, s event.Session) {
+func (b *BaseEventHandler) OnEventToSession(e _interface.Event, s _interface.Session) {
 	if nil == e {
 		return
 	}
-	handler := event.Manager.FetchHandler(e.GetCode())
+	handler := Manager.FetchHandler(e.GetCode())
 
 	if nil != handler {
 		handler.OnEvent(e)

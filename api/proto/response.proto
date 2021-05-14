@@ -1,0 +1,16 @@
+syntax = "proto3";
+package proto;
+option go_package = "./";
+import "msgenum.proto";
+import "struct.proto";
+
+message Response {
+  int32 seqId = 1; //消息的编号
+  RESULT_TYPE result = 2; //返回结果
+  PlayerMatchingResponse playerMatchingResponse = 3;
+}
+
+message PlayerMatchingResponse {
+    ConnectMsg dgsAddr = 1;//dgs服务器公网地址
+    int32 roomId = 2;
+}

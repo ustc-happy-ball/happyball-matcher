@@ -1,31 +1,31 @@
 package framework
-import (
-	event "github.com/fwv/happyball-matcher/framework/event"
-)
+
+import "happyball-matcher/framework/interface"
+
 type BaseEventDispatcher struct {
 	maxEventSize int32
-	EventQueue   *event.EventRingQueue
+	EventQueue   *EventRingQueue
 }
 
-func NewBaseEventDispatcher(maxEventSize int32) BaseEventDispatcher {
-	return BaseEventDispatcher{
+func NewBaseEventDispatcher(maxEventSize int32) *BaseEventDispatcher {
+	return &BaseEventDispatcher{
 		maxEventSize: maxEventSize,
-		EventQueue:   event.NewEventRingQueue(maxEventSize),
+		EventQueue:   NewEventRingQueue(maxEventSize),
 	}
 }
 
-func (b BaseEventDispatcher) FireEvent(e event.Event) {
+func (b *BaseEventDispatcher) FireEvent(e _interface.Event) {
 	b.EventQueue.Push(e)
 }
 
-func (b BaseEventDispatcher) GetEventQueue() *event.EventRingQueue {
+func (b *BaseEventDispatcher) GetEventQueue() *EventRingQueue {
 	return b.EventQueue
 }
 
-func (b BaseEventDispatcher) FireEventToSession(e event.Event, s event.Session) {
+func (b *BaseEventDispatcher) FireEventToSession(e _interface.Event, s _interface.Session) {
 
 }
 
-func (b BaseEventDispatcher) Close() {
+func (b *BaseEventDispatcher) Close() {
 
 }

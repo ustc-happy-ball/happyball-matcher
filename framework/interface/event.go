@@ -1,4 +1,4 @@
-package event
+package _interface
 
 //消息接口
 type Event interface {
@@ -6,11 +6,13 @@ type Event interface {
 	SetCode(eventCode int32)
 	GetSessionId() int32
 	SetSessionId(sessionId int32)
+	GetSession() interface{}
+	SetSession(sess interface{})
 	GetRoomId() int64
 	SetRoomId(roomId int64)
 	GetSeqId() int32
 	SetSeqId(seqId int32)
-	ToMessage() interface{}
-	FromMessage(obj interface{})           //构造消息
-	CopyFromMessage(obj interface{}) Event //拷贝构造消息
+	Encode() interface{}
+	//FromMessage(obj interface{})  //构造消息
+	Decode(obj interface{}) Event
 }

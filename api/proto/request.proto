@@ -1,0 +1,13 @@
+syntax = "proto3";
+package proto;
+option go_package = "./";
+import "msgenum.proto";
+import "struct.proto";
+
+message Request {
+  PlayerMatchingRequest playerMatchingRequest = 1;
+}
+
+message PlayerMatchingRequest {
+  int32 playerId = 1; //玩家ID
+}
