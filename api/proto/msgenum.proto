@@ -1,5 +1,5 @@
 syntax = "proto3";
-package proto;
+package matchproto;
 option go_package = "./";
 enum MSG_TYPE {
   NOTIFY = 0; //通知类型

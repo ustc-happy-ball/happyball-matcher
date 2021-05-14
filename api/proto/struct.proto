@@ -1,5 +1,5 @@
 syntax = "proto3";
-package proto;
+package matchproto;
 
 import "msgenum.proto";
 option go_package = "./";
