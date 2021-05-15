@@ -8,3 +8,11 @@ message ConnectMsg{
   string ip = 1;
   int32 port =2;
 }
+
+message RoomMsg{
+  int32 id = 1;
+  int32 status = 2;
+  int64 createTime = 3;
+  int32 playerCount = 4;
+  int32 highestScore = 5;
+}
