@@ -24,14 +24,13 @@ func (e *BaseEvent) SetSessionId(sessionId int32) {
 	e.SessionId = sessionId
 }
 
-func (e *BaseEvent)GetSession() interface{} {
+func (e *BaseEvent) GetSession() interface{} {
 	return e.Session
 }
 
-func (e *BaseEvent)SetSession(sess interface{}) {
+func (e *BaseEvent) SetSession(sess interface{}) {
 	e.Session = sess.(*BaseSession)
 }
-
 
 func (e *BaseEvent) GetRoomId() int64 {
 	return e.RoomId

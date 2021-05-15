@@ -1,6 +1,7 @@
 package matching
 
 import (
+	"errors"
 	"fmt"
 	"github.com/golang/protobuf/proto"
 	pb "happyball-matcher/api/proto/pb"
@@ -10,15 +11,18 @@ import (
 	"happyball-matcher/internal/event"
 	"happyball-matcher/internal/event/request"
 	"happyball-matcher/internal/event/response"
+	"happyball-matcher/internal/matching/component"
+	"happyball-matcher/internal/matching/process"
 	"log"
 	"time"
 )
 
 type Matcher struct {
-	pool       *MatchPool
+	pool       *component.MatchPool
 	server     *kcpnet.KcpServer
 	dispatcher *framework.BaseEventDispatcher
 	handler    *framework.BaseEventHandler
+	process    component.MatchProcess
 }
 
 func NewMatcher() *Matcher {
@@ -30,6 +34,7 @@ func NewMatcher() *Matcher {
 		server:     s,
 		dispatcher: framework.NewBaseEventDispatcher(configs.MaxEventQueueSize),
 		handler:    framework.NewBaseEventHandler(),
+		process:    process.NewBaseMatchProcess(),
 	}
 	m.Init()
 	return m
@@ -38,7 +43,7 @@ func NewMatcher() *Matcher {
 func (m *Matcher) Init() {
 	log.Println("[Matcher]初始化系统组件！")
 
-	matchHandler := NewMatchHandler()
+	matchHandler := NewMatchHandler(m)
 
 	playerMatchingReq := request.PlayerMatchingRequest{}
 	playerMatchingReq.SetCode(int32(pb.GAME_MSG_CODE_PLAYER_MATCHING_REQUEST))
@@ -53,7 +58,10 @@ func (m *Matcher) Init() {
 func (m *Matcher) Serv() {
 	log.Println("[Matcher]匹配器开始监听新连接！")
 	buf := make([]byte, 1500)
+	// 开启消费队列goroutine
 	go m.HandleEventFromQueue()
+	//// 开启匹配过程goroutine
+	//go m.process.StartMatching(m.pool)
 	for {
 		//select {
 		//case :
@@ -86,10 +94,6 @@ func (m *Matcher) Serv() {
 		mmsg := event.MMessage{}
 		mmsg.SetSession(session)
 		msg := mmsg.Decode(pbMsg)
-		//buf清零
-		for i := range buf {
-			buf[i] = 0
-		}
 		//放入消息队列中
 		m.dispatcher.FireEvent(msg)
 	}
@@ -108,4 +112,12 @@ func (m *Matcher) HandleEventFromQueue() {
 		msg := e.(*event.MMessage)
 		m.handler.OnEvent(msg)
 	}
+}
+
+func (m *Matcher) PutPlayerIntoMatchingPool(p *component.MatchPlayer) error {
+	if nil != m.pool.QueryPlayer(p.Id) {
+		return errors.New("[Matcher]添加玩家至匹配池失败，该玩家已经存在!")
+	}
+	m.pool.AddPlayer(p)
+	return nil
 }
