@@ -3,7 +3,8 @@ kind: Service
 metadata:
   name: matcher
 spec:
-  type: ClusterIP
+  type: LoadBalancer
+  externalTrafficPolicy: Local
   ports:
     - port: 8889
       targetPort: 8889
