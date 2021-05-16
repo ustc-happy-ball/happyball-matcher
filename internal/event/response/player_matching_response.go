@@ -1,6 +1,7 @@
 package response
 
 import (
+	"github.com/golang/protobuf/proto"
 	pb "happyball-matcher/api/proto/pb"
 	"happyball-matcher/framework"
 	_interface "happyball-matcher/framework/interface"
@@ -37,4 +38,18 @@ func (p *PlayerMatchingResponse) Encode() interface{} {
 		DgsAddr: addrInfo.Encode().(*pb.ConnectMsg),
 	}
 	return pbMsg
+}
+
+func (p *PlayerMatchingResponse) ToGMessageBytes() []byte {
+	resp := &pb.Response{
+		PlayerMatchingResponse: p.Encode().(*pb.PlayerMatchingResponse),
+	}
+	msg := pb.MMessage{
+		MsgType: pb.MSG_TYPE_RESPONSE,
+		MsgCode: pb.GAME_MSG_CODE_PLAYER_MATCHING_RESPONSE,
+		Response: resp,
+		SeqId:   -1,
+	}
+	out, _ := proto.Marshal(&msg)
+	return out
 }
