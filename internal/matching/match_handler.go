@@ -47,6 +47,6 @@ func (m *MatchHandler) onPlayerMatching(req *request.PlayerMatchingRequest) {
 		if nil != err {
 			log.Printf("[MatchHandler]玩家加入匹配池失败！error:%+v\n", err)
 		}
-		//m.Matcher.process.StartMatching(m.Matcher.pool)
+		m.Matcher.process.StartMatching(m.Matcher.pool)
 	}
 }
