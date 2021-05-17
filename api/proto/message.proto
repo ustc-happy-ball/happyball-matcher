@@ -1,6 +1,6 @@
 syntax = "proto3";
 package matchproto;
-option go_package = "./";
+option go_package = ".;pb";
 import "notify.proto";
 import "request.proto";
 import "response.proto";

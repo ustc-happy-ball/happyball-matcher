@@ -45,10 +45,10 @@ func (p *PlayerMatchingResponse) ToGMessageBytes() []byte {
 		PlayerMatchingResponse: p.Encode().(*pb.PlayerMatchingResponse),
 	}
 	msg := pb.MMessage{
-		MsgType: pb.MSG_TYPE_RESPONSE,
-		MsgCode: pb.GAME_MSG_CODE_PLAYER_MATCHING_RESPONSE,
+		MsgType:  pb.MSG_TYPE_RESPONSE,
+		MsgCode:  pb.GAME_MSG_CODE_PLAYER_MATCHING_RESPONSE,
 		Response: resp,
-		SeqId:   -1,
+		SeqId:    -1,
 	}
 	out, _ := proto.Marshal(&msg)
 	return out
