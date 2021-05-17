@@ -17,7 +17,7 @@
 ## 运行环境要求
 
 - **[Go](https://golang.org/)**: any one of the **three latest major** [releases](https://golang.org/doc/devel/release.html).
-- 在运行的时候需要指定dgs服务器的grpc地址和端口，格式为`./program -Host localhost -Port 9000 `
+- 在运行的时候需要指定dgs服务器的grpc地址和端口，格式为`-DgsHost localhost -DgsPort 9000`
   
 
 ## happyball其他项目链接

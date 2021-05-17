@@ -1,6 +1,7 @@
 package component
 
 import (
+	"errors"
 	"sync"
 )
 
@@ -16,7 +17,10 @@ func (p *MatchPool) AddPlayer(player *MatchPlayer) {
 	p.PlayerMap.Store(player.Id, player)
 }
 
-func (p *MatchPool) QueryPlayer(playerId int32) *MatchPlayer {
+func (p *MatchPool) QueryPlayer(playerId int32) (*MatchPlayer, error){
 	res, _ := p.PlayerMap.Load(playerId)
-	return res.(*MatchPlayer)
+	if nil == res {
+		return nil, errors.New("玩家不存在！")
+	}
+	return res.(*MatchPlayer), nil
 }

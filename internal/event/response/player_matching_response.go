@@ -15,11 +15,11 @@ import (
 
 type PlayerMatchingResponse struct {
 	framework.BaseEvent //基础消息类作为父类
-	RoomId              int32
+	RoomId              int64
 	dgsAddr             *info.ConnectInfo
 }
 
-func NewPlayerMatchingResponse(roomId int32, dgsAddr *info.ConnectInfo) *PlayerMatchingResponse {
+func NewPlayerMatchingResponse(roomId int64, dgsAddr *info.ConnectInfo) *PlayerMatchingResponse {
 	return &PlayerMatchingResponse{RoomId: roomId, dgsAddr: dgsAddr}
 }
 
