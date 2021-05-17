@@ -1,24 +1,30 @@
 package main
 
 import (
-	"flag"
 	"happyball-matcher/configs"
 	"happyball-matcher/dgs"
 	"happyball-matcher/internal/matching"
 	"log"
 )
 
-func initAddress() {
-	var (
-		dbProxyPort string
-		dbProxyHost string
-	)
+func init() {
+	err := dgs.InitKube("")
+	if err != nil {}
+	log.Println(err)
+}
 
-	flag.StringVar(&dbProxyHost, "DgsHost", "", "Host addr of dbproxy")
-	flag.StringVar(&dbProxyPort, "DgsPort", "", " Port of dbproxy")
-	// -DgsHost localhost -DgsPort 9000
-	flag.Parse()
-	configs.DgsAddr = dbProxyHost + ":" + dbProxyPort
+func initAddress() {
+	//var (
+	//	dgsPort string
+	//	dgsHost string
+	//)
+
+	//flag.StringVar(&dgsHost, "DgsHost", "", "Host addr of dgs")
+	//flag.StringVar(&dgsPort, "DgsPort", "", " Port of dgs")
+	//// -DgsHost localhost -DgsPort 9000
+	//flag.Parse()
+
+	configs.DgsAddr = dgs.DgsAddr[0].InternalIP + ":" + dgs.DgsAddr[0].InternalPort
 }
 
 func main() {

@@ -4,7 +4,7 @@ metadata:
   name: matcher
 spec:
   type: LoadBalancer
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
   ports:
     - port: 8889
       targetPort: 8889
