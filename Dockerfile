@@ -10,7 +10,6 @@ RUN go build -o matcher main.go
 
 FROM alpine:latest
 # environment variable for mongoDB connection
-ARG DGS_HOST
 WORKDIR  /root/go/src/github.com/LILILIhuahuahua/ustc_tencent_game
 COPY --from=builder  /root/go/src/github.com/LILILIhuahuahua/ustc_tencent_game/matcher .
 EXPOSE 8889/udp
