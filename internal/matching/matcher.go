@@ -35,6 +35,7 @@ func NewMatcher() *Matcher {
 		dispatcher: framework.NewBaseEventDispatcher(configs.MaxEventQueueSize),
 		handler:    framework.NewBaseEventHandler(),
 		process:    process.NewBaseMatchProcess(),
+		pool:       component.NewMatchPool(),
 	}
 	m.Init()
 	return m
@@ -115,7 +116,8 @@ func (m *Matcher) HandleEventFromQueue() {
 }
 
 func (m *Matcher) PutPlayerIntoMatchingPool(p *component.MatchPlayer) error {
-	if nil != m.pool.QueryPlayer(p.Id) {
+	player, _ := m.pool.QueryPlayer(p.Id)
+	if nil != player {
 		return errors.New("[Matcher]添加玩家至匹配池失败，该玩家已经存在!")
 	}
 	m.pool.AddPlayer(p)
