@@ -42,7 +42,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build --build-arg DB_USER=${{ secrets.DB_USER }} --build-arg DB_PWD=${{ secrets.DB_PWD}} \
-            --build-arg DB_HOST=${{ secrets.DB_HOST }} --build-arg DB_PORT=${{ secrets.DB_PORT }} -t ${TKE_IMAGE_URL}:${NAME}-${NAMESPACE}-${GITHUB_SHA} ./deployments/
+            --build-arg DB_HOST=${{ secrets.DB_HOST }} --build-arg DB_PORT=${{ secrets.DB_PORT }} -t ${TKE_IMAGE_URL}:${NAME}-${NAMESPACE}-${GITHUB_SHA} .
 
       - name: Login TKE Registry
         run: |
@@ -72,8 +72,8 @@ jobs:
       # Deploy the Docker image to the TKE cluster
       - name: Deploy To TKE
         run: |
-          ./kustomize edit set image ${TKE_IMAGE_URL}:${NAME}-${NAMESPACE}-${GITHUB_SHA}
-          ./kustomize build ./deployments/ | kubectl apply  -f -
+          (cd deployments && ./../kustomize edit set image ${TKE_IMAGE_URL}:${NAME}-${NAMESPACE}-${GITHUB_SHA})
+          (cd deployments && ./../kustomize build . | kubectl apply  -f - )
           kubectl rollout status deployment/${DEPLOYMENT_NAME}
           kubectl get services -o wide
 #          kubectl rollout status deployment/${DEPLOYMENT_NAME} -n=${NAMESPACE}
