@@ -2,7 +2,7 @@ syntax = "proto3";
 package matchproto;
 
 import "msgenum.proto";
-option go_package = ".;pb";
+option go_package = "./";
 
 message ConnectMsg{
   string ip = 1;
