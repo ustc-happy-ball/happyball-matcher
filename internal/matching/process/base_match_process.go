@@ -67,8 +67,9 @@ func (b *BaseMatchProcess) StartMatching(pool *component.MatchPool) {
 	dgsPort,err := strconv.ParseInt(addrs[1], 10, 32)
 	dgsAddr := info.NewConnectInfo(dgsIp, int32(dgsPort))
 	resp := response.NewPlayerMatchingResponse(targetRoomID, dgsAddr)
-	data :=	resp.ToGMessageBytes()
 	for _, player := range players {
+		resp.SeqId = player.Sess.SeqId
+		data :=	resp.ToGMessageBytes()
 		player.Sess.Sess.Write(data)
 	}
 }

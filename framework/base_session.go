@@ -11,6 +11,7 @@ import (
 type (
 	BaseSession struct {
 		Id                 int32           //唯一标识号，与player的ID相同
+		SeqId              int32           //包序列号
 		Sess               *kcp.UDPSession //kcp发送方
 		Status             int32           //会话状态：建立、销毁
 		Type               int32           //网络类型：TCP、UDP

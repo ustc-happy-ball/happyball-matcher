@@ -40,7 +40,7 @@ func (p *PlayerMatchingRequest) ToGMessageBytes() []byte {
 		MsgType: pb.MSG_TYPE_REQUEST,
 		MsgCode: pb.GAME_MSG_CODE_PLAYER_MATCHING_REQUEST,
 		Request: req,
-		SeqId:   -1,
+		SeqId:   333,
 	}
 	out, _ := proto.Marshal(&msg)
 	return out

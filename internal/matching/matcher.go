@@ -93,6 +93,7 @@ func (m *Matcher) Serv() {
 			continue
 		}
 		mmsg := event.MMessage{}
+		session.SeqId = pbMsg.GetSeqId()
 		mmsg.SetSession(session)
 		msg := mmsg.Decode(pbMsg)
 		//放入消息队列中
