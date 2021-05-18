@@ -8,7 +8,6 @@ import (
 	"happyball-matcher/internal/event/response"
 	"happyball-matcher/internal/matching/component"
 	"happyball-matcher/internal/matching/rule"
-	"strconv"
 	"strings"
 )
 
@@ -59,13 +58,15 @@ func (b *BaseMatchProcess) StartMatching(pool *component.MatchPool) {
 		targetRoomID = roomID
 	}
 	//回包
+	// TODO refactor code
 	addrs := strings.Split(configs.DgsAddr, ":")
 	if 2 != len(addrs) {
 		fmt.Printf("[BaseMatchProcess]dgs地址解析出错! addr：%+v\n", configs.DgsAddr)
 	}
-	dgsIp := addrs[0]
-	dgsPort,err := strconv.ParseInt(addrs[1], 10, 32)
-	dgsAddr := info.NewConnectInfo(dgsIp, int32(dgsPort))
+
+	dgsIp := "1.15.79.161"
+	//dgsPort,err := strconv.ParseInt(addrs[1], 10, 32)
+	dgsAddr := info.NewConnectInfo(dgsIp, 32001)
 	resp := response.NewPlayerMatchingResponse(targetRoomID, dgsAddr)
 	for _, player := range players {
 		resp.SeqId = player.Sess.SeqId
