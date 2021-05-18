@@ -5,7 +5,7 @@ metadata:
   labels:
     app: matcher
 spec:
-  replicas: 3
+  replicas: 1
   minReadySeconds: 5
   strategy:
     type: RollingUpdate
