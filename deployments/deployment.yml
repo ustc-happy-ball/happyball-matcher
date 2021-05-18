@@ -19,6 +19,8 @@ spec:
     metadata:
       labels:
         app: matcher
+      annotations:
+        tke.cloud.tencent.com/networks: "tke-route-eni"
     spec:
       containers:
         - name: matcher
