@@ -46,7 +46,7 @@ func (b *BaseMatchProcess) StartMatching(pool *component.MatchPool) {
 	for _, roomInfo := range roomInfos {
 		if b.IsRoomAvailable(roomInfo) {
 			targetRoomInfo = roomInfo
-			targetRoomID = roomInfo.RoomId
+			targetRoomID = roomInfo.ID
 			break
 		}
 	}
