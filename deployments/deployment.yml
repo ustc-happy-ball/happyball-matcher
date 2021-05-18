@@ -35,6 +35,5 @@ spec:
       imagePullSecrets:
         - name: regcred
       restartPolicy: Always
-#      serviceAccountName: default-view
       nodeSelector:
         environment: dev
