@@ -17,7 +17,7 @@ func (p *MatchPool) AddPlayer(player *MatchPlayer) {
 	p.PlayerMap.Store(player.Id, player)
 }
 
-func (p *MatchPool) QueryPlayer(playerId int32) (*MatchPlayer, error){
+func (p *MatchPool) QueryPlayer(playerId int32) (*MatchPlayer, error) {
 	res, _ := p.PlayerMap.Load(playerId)
 	if nil == res {
 		return nil, errors.New("玩家不存在！")

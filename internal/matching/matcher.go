@@ -92,7 +92,7 @@ func (m *Matcher) Serv() {
 			log.Printf("%+v\n", err)
 			continue
 		}
-		fmt.Println("pbMsg:",pbMsg)
+		fmt.Println("pbMsg:", pbMsg)
 		mmsg := event.MMessage{}
 		session.SeqId = pbMsg.GetSeqId()
 		mmsg.SetSession(session)

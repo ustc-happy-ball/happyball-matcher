@@ -2,13 +2,14 @@ package process
 
 import (
 	"fmt"
-	"happyball-matcher/configs"
 	"happyball-matcher/dgs"
 	"happyball-matcher/internal/event/info"
 	"happyball-matcher/internal/event/response"
 	"happyball-matcher/internal/matching/component"
 	"happyball-matcher/internal/matching/rule"
-	"strings"
+	"log"
+	"math/rand"
+	"strconv"
 )
 
 type BaseMatchProcess struct {
@@ -22,6 +23,11 @@ func NewBaseMatchProcess() *BaseMatchProcess {
 }
 
 func (b *BaseMatchProcess) StartMatching(pool *component.MatchPool) {
+	num := len(dgs.GlobalDgsInfo.Address)
+	pick := rand.Intn(num)
+	internalAddr := dgs.GlobalDgsInfo.Address[pick].InternalIP + ":" + dgs.GlobalDgsInfo.Address[pick].InternalPort
+	remoteDgs := dgs.InitConnection(internalAddr)
+
 	players := make([]*component.MatchPlayer, 0)
 	pool.PlayerMap.Range(func(key, value interface{}) bool {
 		p := value.(*component.MatchPlayer)
@@ -34,7 +40,7 @@ func (b *BaseMatchProcess) StartMatching(pool *component.MatchPool) {
 		return
 	}
 	//拉取dgs房间信息,挑选一个合适的房间分配至玩家，如未找到则创建一个
-	roomInfos, err := dgs.GetRoomList()
+	roomInfos, err := remoteDgs.GetRoomList()
 	if nil != err {
 		fmt.Printf("[BaseMatchProcess]grpc拉取房间信息列表出错! err：%+v\n", err)
 		return
@@ -50,27 +56,25 @@ func (b *BaseMatchProcess) StartMatching(pool *component.MatchPool) {
 		}
 	}
 	if nil == targetRoomInfo {
-		roomID, err := dgs.CreateRoom()
+		roomID, err := remoteDgs.CreateRoom()
 		if nil != err {
 			fmt.Printf("[BaseMatchProcess]grpc创建房间信息出错! err：%+v\n", err)
 			return
 		}
 		targetRoomID = roomID
 	}
-	//回包
-	// TODO refactor code
-	addrs := strings.Split(configs.DgsAddr, ":")
-	if 2 != len(addrs) {
-		fmt.Printf("[BaseMatchProcess]dgs地址解析出错! addr：%+v\n", configs.DgsAddr)
-	}
 
-	dgsIp := "1.15.79.161"
-	//dgsPort,err := strconv.ParseInt(addrs[1], 10, 32)
-	dgsAddr := info.NewConnectInfo(dgsIp, 32001)
+	//回包
+	dgsIp := dgs.GlobalDgsInfo.Address[pick].ExternalIP
+	dgsPort,err := strconv.ParseInt(dgs.GlobalDgsInfo.Address[pick].ExternalPort, 10, 32)
+	if err != nil {
+		log.Println(err)
+	}
+	dgsAddr := info.NewConnectInfo(dgsIp, int32(dgsPort))
 	resp := response.NewPlayerMatchingResponse(targetRoomID, dgsAddr)
 	for _, player := range players {
 		resp.SeqId = player.Sess.SeqId
-		data :=	resp.ToGMessageBytes()
+		data := resp.ToGMessageBytes()
 		player.Sess.Sess.Write(data)
 	}
 }

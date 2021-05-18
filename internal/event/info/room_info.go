@@ -32,10 +32,10 @@ func (r RoomInfo) Encode() interface{} {
 func (r RoomInfo) Decode(obj interface{}) _interface.Event {
 	pbMsg := obj.(*dgsGrpc.RoomMsg)
 	return &RoomInfo{
-		ID: pbMsg.Id,
-		Status: pbMsg.Status,
-		CreateTime: pbMsg.CreateTime,
-		PlayerCount: r.PlayerCount,
+		ID:           pbMsg.Id,
+		Status:       pbMsg.Status,
+		CreateTime:   pbMsg.CreateTime,
+		PlayerCount:  r.PlayerCount,
 		HighestScore: r.HighestScore,
 	}
 }

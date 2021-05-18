@@ -17,35 +17,35 @@ var GlobalDgsInfo *DgsAddress
 
 //Address represents the info of a single dgs pod
 type Address struct {
-	InternalIP string
+	InternalIP   string
 	InternalPort string
-	ExternalIP string
+	ExternalIP   string
 	ExternalPort string
 }
 
 //DgsAddress represent all dgs pod address
 type DgsAddress struct {
-	Address []*Address
-	Die 	chan struct{}
+	Address   []*Address
+	Die       chan struct{}
 	NameSpace string
-	DgsName string
+	DgsName   string
 	clientset *kubernetes.Clientset
 }
 
 // NewDgsAddress return an DgsAddress. It will update address info every 1 hour.
 func NewDgsAddress(nameSpace string, dgsName string) *DgsAddress {
 	clientSet := getClientSet()
-	addrs,err := getDgsAddress(clientSet, nameSpace, dgsName)
+	addrs, err := getDgsAddress(clientSet, nameSpace, dgsName)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	dgs := DgsAddress{
-		Address: addrs,
-		Die:     make(chan struct{}),
+		Address:   addrs,
+		Die:       make(chan struct{}),
 		clientset: clientSet,
 		NameSpace: nameSpace,
-		DgsName: dgsName,
+		DgsName:   dgsName,
 	}
 
 	go dgs.maintainAddress()
@@ -53,7 +53,7 @@ func NewDgsAddress(nameSpace string, dgsName string) *DgsAddress {
 }
 
 // getClientSet return clientSet instance
-func getClientSet() *kubernetes.Clientset{
+func getClientSet() *kubernetes.Clientset {
 	// in-cluster access
 	config, err := rest.InClusterConfig()
 	if err != nil {
@@ -80,11 +80,11 @@ func getClientSet() *kubernetes.Clientset{
 }
 
 // getDgsAddress return all dgs pod ip address info.
-func getDgsAddress(clientset *kubernetes.Clientset, nameSpace string, dgsName string) ([]*Address,error) {
+func getDgsAddress(clientset *kubernetes.Clientset, nameSpace string, dgsName string) ([]*Address, error) {
 	var dgsAddr []*Address
-	svc,err := clientset.CoreV1().Services(nameSpace).Get(context.TODO(),dgsName,v1.GetOptions{})
+	svc, err := clientset.CoreV1().Services(nameSpace).Get(context.TODO(), dgsName, v1.GetOptions{})
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	//var internalPort,nodePort string
@@ -95,12 +95,12 @@ func getDgsAddress(clientset *kubernetes.Clientset, nameSpace string, dgsName st
 	}
 
 	set := labels.Set(svc.Spec.Selector)
-	if pods,err := clientset.CoreV1().Pods("default").List(context.TODO(),v1.ListOptions{LabelSelector: set.AsSelector().String()}); err == nil {
+	if pods, err := clientset.CoreV1().Pods("default").List(context.TODO(), v1.ListOptions{LabelSelector: set.AsSelector().String()}); err == nil {
 		for _, pod := range pods.Items {
-			nodePubIP := getNodePublicIP(clientset,pod.Spec.NodeName)
+			nodePubIP := getNodePublicIP(clientset, pod.Spec.NodeName)
 			podIP := pod.Status.PodIP
 
-			dgsAddr = append(dgsAddr,&Address{
+			dgsAddr = append(dgsAddr, &Address{
 				InternalIP:   podIP,
 				InternalPort: configs.DgsRPCPort,
 				ExternalIP:   nodePubIP,
@@ -111,44 +111,48 @@ func getDgsAddress(clientset *kubernetes.Clientset, nameSpace string, dgsName st
 		log.Fatalln(err)
 	}
 
-	return dgsAddr,nil
+	return dgsAddr, nil
 }
 
 func (d *DgsAddress) updateAddress() {
-	addrs,err := getDgsAddress(d.clientset,d.NameSpace,d.DgsName)
+	addrs, err := getDgsAddress(d.clientset, d.NameSpace, d.DgsName)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	if !reflect.DeepEqual(addrs,d.Address) {
+	if !reflect.DeepEqual(addrs, d.Address) {
 		d.Address = addrs
 	}
 }
 
 // maintainAddress will update dgs ip info every hour
-func (d *DgsAddress)maintainAddress() {
+func (d *DgsAddress) maintainAddress() {
 	tick := time.NewTicker(1 * time.Hour)
 	for {
 		select {
-		case <- tick.C:
+		case <-tick.C:
 			d.updateAddress()
-		case <- d.Die:
+		case <-d.Die:
 			return
 		}
 	}
 }
 
 // PrintAddress is a help function for debugging
-func (d *DgsAddress)PrintAddress() {
-	for _,addr := range d.Address {
-		log.Printf("InternalIP: %s, internalPort: %s, externalIP: %s, externalPort: %s\n",addr.InternalIP,addr.InternalPort,addr.ExternalIP,addr.ExternalPort)
+func (d *DgsAddress) PrintAddress() {
+	for _, addr := range d.Address {
+		log.Printf("InternalIP: %s, internalPort: %s, externalIP: %s, externalPort: %s\n", addr.InternalIP, addr.InternalPort, addr.ExternalIP, addr.ExternalPort)
 	}
+}
+
+func (d *DgsAddress) Close() {
+	close(d.Die)
 }
 
 // getNodePublicIP return node Public IP address according to its nodeName
 func getNodePublicIP(clientset *kubernetes.Clientset, nodeName string) string {
 	var nodeIP string
-	node,err  := clientset.CoreV1().Nodes().Get(context.TODO(),nodeName,v1.GetOptions{})
+	node, err := clientset.CoreV1().Nodes().Get(context.TODO(), nodeName, v1.GetOptions{})
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -162,34 +166,3 @@ func getNodePublicIP(clientset *kubernetes.Clientset, nodeName string) string {
 
 	return nodeIP
 }
-
-
-// fakeAddr return usable address for testing
-//func fakeAddr() {
-//	var addrs []*Address
-//	addr1 := Address{
-//		InternalIP:   "172.16.0.35",
-//		InternalPort: "32003",
-//		ExternalIP:   "1.15.79.161",
-//		ExternalPort: "32001",
-//	}
-//
-//	addr2 := Address{
-//		InternalIP:   "172.16.0.6",
-//		InternalPort: "32003",
-//		ExternalIP:   "1.15.135.248",
-//		ExternalPort: "32001",
-//	}
-//
-//	addr3 := Address{
-//		InternalIP:   "172.16.0.73",
-//		InternalPort: "32003",
-//		ExternalIP:   "1.15.221.112",
-//		ExternalPort: "32001",
-//	}
-//
-//	addrs = append(addrs, &addr1,&addr2,&addr3)
-//	DgsAddr = addrs
-//}
-
-
