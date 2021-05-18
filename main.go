@@ -24,7 +24,7 @@ func initAddress() {
 	//flag.Parse()
 
 	//configs.DgsAddr = dgs.GlobalDgsInfo.Address[0].InternalIP + ":" + dgs.GlobalDgsInfo.Address[0].InternalPort
-	configs.DgsAddr = dgs.GlobalDgsInfo.Address[0].InternalIP + ":" + "9000"
+	configs.DgsAddr = dgs.GlobalDgsInfo.Address[0].InternalIP + ":" + dgs.GlobalDgsInfo.Address[0].InternalPort
 }
 
 func main() {

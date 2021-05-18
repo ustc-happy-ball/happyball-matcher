@@ -2,6 +2,7 @@ package dgs
 
 import (
 	"context"
+	"happyball-matcher/configs"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/kubernetes"
@@ -86,9 +87,10 @@ func getDgsAddress(clientset *kubernetes.Clientset, nameSpace string, dgsName st
 		return nil,err
 	}
 
-	var internalPort,nodePort string
+	//var internalPort,nodePort string
+	var nodePort string
 	for _, port := range svc.Spec.Ports {
-		internalPort = strconv.Itoa(int(port.Port))
+		//internalPort = strconv.Itoa(int(port.Port))
 		nodePort = strconv.Itoa(int(port.NodePort))
 	}
 
@@ -100,7 +102,7 @@ func getDgsAddress(clientset *kubernetes.Clientset, nameSpace string, dgsName st
 
 			dgsAddr = append(dgsAddr,&Address{
 				InternalIP:   podIP,
-				InternalPort: internalPort,
+				InternalPort: configs.DgsRPCPort,
 				ExternalIP:   nodePubIP,
 				ExternalPort: nodePort,
 			})
