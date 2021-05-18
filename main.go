@@ -8,9 +8,8 @@ import (
 )
 
 func init() {
-	err := dgs.InitKube("")
-	if err != nil {}
-	log.Println(err)
+	dgs.GlobalDgsInfo = dgs.NewDgsAddress("default","dgs-srv")
+	dgs.GlobalDgsInfo.PrintAddress()
 }
 
 func initAddress() {
@@ -24,7 +23,7 @@ func initAddress() {
 	//// -DgsHost localhost -DgsPort 9000
 	//flag.Parse()
 
-	configs.DgsAddr = dgs.DgsAddr[0].InternalIP + ":" + dgs.DgsAddr[0].InternalPort
+	configs.DgsAddr = dgs.GlobalDgsInfo.Address[0].InternalIP + ":" + dgs.GlobalDgsInfo.Address[0].InternalPort
 }
 
 func main() {
