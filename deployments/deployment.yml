@@ -19,16 +19,13 @@ spec:
     metadata:
       labels:
         app: matcher
+      annotations:
+        tke.cloud.tencent.com/networks: "tke-route-eni"
     spec:
       containers:
         - name: matcher
           image: hkccr.ccs.tencentyun.com/tke_cluster/tke_cluster
           imagePullPolicy: Always
-          #          args:
-          #            - "-DBUser "
-          #            - "-DBPassword "
-          #            - "-Host mongodb"
-          #            - "-Port "
           ports:
             - containerPort: 8889
               protocol: UDP

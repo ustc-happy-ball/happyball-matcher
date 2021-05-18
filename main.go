@@ -1,24 +1,30 @@
 package main
 
 import (
-	"flag"
 	"happyball-matcher/configs"
 	"happyball-matcher/dgs"
 	"happyball-matcher/internal/matching"
 	"log"
 )
 
-func initAddress() {
-	var (
-		dgsPort string
-		dgsHost string
-	)
+func init() {
+	dgs.GlobalDgsInfo = dgs.NewDgsAddress("default","dgs-srv")
+	dgs.GlobalDgsInfo.PrintAddress()
+}
 
-	flag.StringVar(&dgsHost, "DgsHost", "", "Host addr of dbproxy")
-	flag.StringVar(&dgsPort, "DgsPort", "", " Port of dbproxy")
-	// -DgsHost localhost -DgsPort 9000
-	flag.Parse()
-	configs.DgsAddr = dgsHost + ":" + dgsPort
+func initAddress() {
+	//var (
+	//	dgsPort string
+	//	dgsHost string
+	//)
+
+	//flag.StringVar(&dgsHost, "DgsHost", "", "Host addr of dgs")
+	//flag.StringVar(&dgsPort, "DgsPort", "", " Port of dgs")
+	//// -DgsHost localhost -DgsPort 9000
+	//flag.Parse()
+
+	//configs.DgsAddr = dgs.GlobalDgsInfo.Address[0].InternalIP + ":" + dgs.GlobalDgsInfo.Address[0].InternalPort
+	configs.DgsAddr = dgs.GlobalDgsInfo.Address[0].InternalIP + ":" + dgs.GlobalDgsInfo.Address[0].InternalPort
 }
 
 func main() {
