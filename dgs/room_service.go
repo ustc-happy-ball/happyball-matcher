@@ -16,13 +16,12 @@ type ServiceConnection struct {
 }
 
 // InitConnection return a dgs gRPC client wrapper, it will block to initialize the connection
-func InitConnection(address string) *ServiceConnection{
+func InitConnection(address string) *ServiceConnection {
 	ctx, _ := context.WithDeadline(context.TODO(), time.Now().Add(5*time.Second))
 	conn, err := grpc.DialContext(ctx, address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalln("[grpc] 连接初始化失败，失败原因", err.Error())
 	}
-
 
 	return &ServiceConnection{
 		conn:        conn,
@@ -30,13 +29,12 @@ func InitConnection(address string) *ServiceConnection{
 	}
 }
 
-func (s *ServiceConnection)GetRoomGrpcService() (dgsGrpc.RoomServiceClient, error) {
+func (s *ServiceConnection) GetRoomGrpcService() (dgsGrpc.RoomServiceClient, error) {
 	if s == nil {
 		return nil, errors.New("没有初始化connection")
 	}
 	return s.roomService, nil
 }
-
 
 func (s *ServiceConnection) GetRoomList() ([]*info.RoomInfo, error) {
 	ctx := context.TODO()
@@ -64,4 +62,3 @@ func (s *ServiceConnection) CreateRoom() (int64, error) {
 	}
 	return res.RoomId, nil
 }
-

@@ -5,6 +5,6 @@ var (
 	MaxEventQueueSize int32 = 500            //消息队列大小
 	DgsAddr           string
 	DgsRPCPort        string = "9000"
-	NameSpace  string = "default"
-	DgsSvcName string = "dgs-srv"
+	NameSpace         string = "default"
+	DgsSvcName        string = "dgs-srv"
 )

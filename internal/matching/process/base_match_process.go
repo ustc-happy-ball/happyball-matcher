@@ -66,7 +66,7 @@ func (b *BaseMatchProcess) StartMatching(pool *component.MatchPool) {
 
 	//回包
 	dgsIp := dgs.GlobalDgsInfo.Address[pick].ExternalIP
-	dgsPort,err := strconv.ParseInt(dgs.GlobalDgsInfo.Address[pick].ExternalPort, 10, 32)
+	dgsPort, err := strconv.ParseInt(dgs.GlobalDgsInfo.Address[pick].ExternalPort, 10, 32)
 	if err != nil {
 		log.Println(err)
 	}

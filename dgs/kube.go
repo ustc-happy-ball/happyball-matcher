@@ -127,7 +127,7 @@ func (d *DgsAddress) updateAddress() {
 
 // maintainAddress will update dgs ip info every hour
 func (d *DgsAddress) maintainAddress() {
-	tick := time.NewTicker(1 * time.Hour)
+	tick := time.NewTicker(10 * time.Second)
 	for {
 		select {
 		case <-tick.C:
