@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: run tests
-        run: go test -json ./... > test.json
+        run: CI=true go test -json ./... > test.json
 
       - name: Annotate tests
         if: always()
