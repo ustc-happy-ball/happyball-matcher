@@ -13,7 +13,7 @@
 #
 # 3. Change the values for the TKE_IMAGE_URL, TKE_REGION, TKE_CLUSTER_ID and DEPLOYMENT_NAME environment variables (below).
 
-name: CI/CD
+name: Build & Deploy
 
 on:
   push:
@@ -30,9 +30,34 @@ env:
   NAME: matcher
 
 jobs:
+  go-fmt:
+    name: Fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fmt
+        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
+  go-test:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: run tests
+        run: go test -json ./... > test.json
+
+      - name: Annotate tests
+        if: always()
+        uses: guyarb/golang-test-annotations@v0.3.0
+        with:
+          test-results: test.jso
+
   setup-build-publish-deploy:
     name: Build, push and deploy to TKE
     runs-on: ubuntu-latest
+    needs:
+      - go-fmt
+      - go-test
     steps:
 
       - name: Checkout

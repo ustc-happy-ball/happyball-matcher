@@ -1,0 +1,69 @@
+name: Test, Lint and Error check
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+  workflow_dispatch:
+    branches: [ '**' ]
+
+
+jobs:
+  go-fmt:
+    name: Fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fmt
+        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
+
+  go-lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: latest
+
+  go-test:
+    #    strategy:
+    #      matrix:
+    #        go-version: [ 1.14.x ]
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: run tests
+        run: go test -json ./... > test.json
+
+      - name: Annotate tests
+        if: always()
+        uses: guyarb/golang-test-annotations@v0.3.0
+        with:
+          test-results: test.json
+
+  errcheck:
+    name: Errcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: check
+        uses: grandcolline/golang-github-actions@v1.1.0
+        with:
+          run: errcheck
+          token: ${{ secrets.CI_TOKEN }}
+  sec:
+    name: SecurityCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: check
+        uses: grandcolline/golang-github-actions@v1.1.0
+        with:
+          run: sec
+          token: ${{ secrets.CI_TOKEN }}
+          flags: "-exclude=G104"
