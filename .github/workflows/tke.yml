@@ -50,7 +50,7 @@ jobs:
         if: always()
         uses: guyarb/golang-test-annotations@v0.3.0
         with:
-          test-results: test.jso
+          test-results: test.json
 
   setup-build-publish-deploy:
     name: Build, push and deploy to TKE
